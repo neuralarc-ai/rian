@@ -13,7 +13,7 @@ export default function MediaHero() {
       </p>
       <div className="w-full flex justify-center">
         <Image
-          src="/images/platform/media-translation-hero.png"
+          src="/images/platform/media-translation-hero.webp"
           alt="Media translation dashboard preview"
           width={1512}
           height={948}

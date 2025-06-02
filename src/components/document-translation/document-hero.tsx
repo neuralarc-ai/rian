@@ -13,7 +13,7 @@ export default function DocumentHero() {
       </p>
       <div className="w-full flex justify-center">
         <Image
-          src="/images/platform/document-translation-hero.png"
+          src="/images/platform/document-translation-hero.webp"
           alt="Document translation dashboard preview"
           width={1512}
           height={948}

@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import Image from 'next/image';
+import { useState, useRef, useEffect } from 'react';
 import { ShineBorder } from '../magicui/shine-border';
 import {
   Carousel,
@@ -29,96 +28,177 @@ const demoItems = [
   },
 ];
 
-// Demo video pairs for the carousel (3 cards, mapped to demoItems)
+// Update video pairs to use cloud URLs
 const demoVideoPairs = [
   {
     before: {
-      src: '/videos/video-1-before.mp4',
+      src: 'https://res.cloudinary.com/dykdfg6m5/video/upload/v1748842734/xl16aurp4xw924rwdzsi.mp4',
       label: 'Before (English)',
       langTag: 'ENGLISH',
+      poster: '/videos/video-1-before-thumbnail.webp',
     },
     after: {
-      src: '/videos/video-1-after.mp4',
+      src: 'https://res.cloudinary.com/dykdfg6m5/video/upload/v1748842738/drawdx5ki120dshz0wxm.mp4',
       label: 'After (Japanese)',
       langTag: 'JAPANESE',
+      poster: '/videos/video-1-after-thumbnail.webp',
     },
   },
   {
     before: {
-      src: '/videos/video-2-before.mp4',
+      src: 'https://res.cloudinary.com/dykdfg6m5/video/upload/v1748842740/tifa1fw2guv2v9ferovy.mp4',
       label: 'Before (English)',
       langTag: 'ENGLISH',
+      poster: '/videos/video-2-before-thumbnail.webp',
     },
     after: {
-      src: '/videos/video-2-after.mp4',
+      src: 'https://res.cloudinary.com/dykdfg6m5/video/upload/v1748842749/ejguooojhcq6y74xcfsm.mp4',
       label: 'After (French)',
       langTag: 'FRENCH',
+      poster: '/videos/video-2-after-thumbnail.webp',
     },
   },
   {
     before: {
-      src: '/videos/video-3-before.mp4',
+      src: 'https://res.cloudinary.com/dykdfg6m5/video/upload/v1748842747/edf33ijjzfrcsx5si8yr.mp4',
       label: 'Before (Hindi)',
       langTag: 'HINDI',
+      poster: '/videos/video-3-before-thumbnail.webp',
     },
     after: {
-      src: '/videos/video-3-after.mp4',
+      src: 'https://res.cloudinary.com/dykdfg6m5/video/upload/v1748842739/eialefqn39cjirpnnltu.mp4',
       label: 'After (German)',
       langTag: 'GERMAN',
+      poster: '/videos/video-3-after-thumbnail.webp',
     },
   },
 ];
 
-function VideoCard({ src, label, langTag }: { src: string; label: string; langTag: string }) {
+function VideoCard({ src, label, langTag, poster }: { src: string; label: string; langTag: string; poster: string }) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const handlePlayPause = (e: React.MouseEvent) => {
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleCanPlay = () => {
+      setIsLoading(false);
+    };
+
+    const handleError = (e: Event) => {
+      const target = e.target as HTMLVideoElement;
+      setError(`Error loading video: ${target.error?.message || 'Unknown error'}`);
+      setIsLoading(false);
+    };
+
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('error', handleError);
+
+    return () => {
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('error', handleError);
+    };
+  }, []);
+
+  const handlePlayPause = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (videoRef.current) {
+    if (!videoRef.current) return;
+
+    try {
       if (isPlaying) {
-        videoRef.current.pause();
+        await videoRef.current.pause();
       } else {
-        videoRef.current.play().catch(() => {});
+        // Reset video to start if it has ended
+        if (videoRef.current.ended) {
+          videoRef.current.currentTime = 0;
+        }
+        await videoRef.current.play();
       }
       setIsPlaying(!isPlaying);
+    } catch (err) {
+      console.error('Error playing video:', err);
+      setError('Error playing video. Please try again.');
     }
   };
 
-  const handleEnded = () => setIsPlaying(false);
+  const handleEnded = () => {
+    setIsPlaying(false);
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+    }
+  };
 
   return (
     <div className="relative w-full rounded-3xl overflow-hidden bg-[#FFFFFF]/10 p-2 flex flex-col mx-auto">
-      {/* Video Element (always visible, no thumbnail) */}
       <div className="relative w-full h-full cursor-pointer" onClick={handlePlayPause}>
         <video
           ref={videoRef}
-          className="w-full h-full object-cover rounded-2xl"
+          className="w-full h-full object-cover rounded-3xl"
           playsInline
+          preload="metadata"
+          poster={poster}
           onClick={handlePlayPause}
           onEnded={handleEnded}
         >
           <source src={src} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-        {/* Play/Pause Overlay */}
-        <button
-          className={`absolute inset-0 w-full h-full flex items-center justify-center transition-opacity ${isPlaying ? 'bg-black/10 opacity-0 hover:opacity-100' : 'opacity-100'}`}
-          aria-label={isPlaying ? 'Pause video' : 'Play video'}
-          onClick={handlePlayPause}
-        >
-          <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
-            {isPlaying ? (
-              <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-              </svg>
-            ) : (
-              <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            )}
+
+        {/* Loading State */}
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+            <div className="w-10 h-10 border-4 border-[#67F5C8] border-t-transparent rounded-full animate-spin" />
           </div>
-        </button>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+            <div className="text-white text-center p-4">
+              <p className="text-sm mb-2">{error}</p>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setError(null);
+                  setIsLoading(true);
+                  if (videoRef.current) {
+                    videoRef.current.load();
+                  }
+                }}
+                className="text-[#67F5C8] text-sm underline"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Play/Pause Overlay */}
+        {!isLoading && !error && (
+          <button
+            className={`absolute inset-0 w-full h-full flex items-center justify-center transition-opacity ${
+              isPlaying ? 'bg-black/10 opacity-0 hover:opacity-100' : 'opacity-100'
+            }`}
+            aria-label={isPlaying ? 'Pause video' : 'Play video'}
+            onClick={handlePlayPause}
+          >
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
+              {isPlaying ? (
+                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                </svg>
+              ) : (
+                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              )}
+            </div>
+          </button>
+        )}
+
         {/* Language Tag Overlay */}
         <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md z-20">
           {langTag}
@@ -181,33 +261,48 @@ export default function DemoHome() {
         </Link>
       </div>
       {/* Carousel Video Demo Section */}
-      <div className="relative mx-auto rounded-[40px] p-4 overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src="/images/home/demo-home-bg.png"
-            alt="Background pattern"
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-        <Carousel className="relative" setApi={handleSetApi} opts={{ loop: false }}>
+      <div className="relative md:mx-auto rounded-[40px] p-4 overflow-hidden">
+        <Carousel 
+          className="relative" 
+          setApi={handleSetApi} 
+          opts={{ 
+            loop: true,
+            align: "center",
+            skipSnaps: false,
+            duration: 20,
+            dragFree: false,
+            containScroll: "trimSnaps"
+          }}
+          
+        >
           <CarouselContent className="px-8">
             {demoVideoPairs.map((pair, idx) => (
               <CarouselItem key={idx} className="flex justify-center items-center">
-                <div className="flex flex-row gap-6 w-full max-w-[80%] mx-auto">
-                  <div className="min-w-0 flex justify-center">
-                    <VideoCard src={pair.before.src} label={pair.before.label} langTag={pair.before.langTag} />
+                <div className="flex flex-col md:flex-row gap-6 w-full max-w-[80%] mx-auto">
+                  {/* Before Video - Full width on mobile, half width on md+ */}
+                  <div className="w-full md:w-1/2 min-w-0 flex justify-center">
+                    <VideoCard 
+                      src={pair.before.src} 
+                      label={pair.before.label} 
+                      langTag={pair.before.langTag} 
+                      poster={pair.before.poster} 
+                    />
                   </div>
-                  <div className="min-w-0 flex justify-center">
-                    <VideoCard src={pair.after.src} label={pair.after.label} langTag={pair.after.langTag} />
+                  {/* After Video - Full width on mobile, half width on md+ */}
+                  <div className="w-full md:w-1/2 min-w-0 flex justify-center">
+                    <VideoCard 
+                      src={pair.after.src} 
+                      label={pair.after.label} 
+                      langTag={pair.after.langTag} 
+                      poster={pair.after.poster} 
+                    />
                   </div>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="left-2 z-20 bg-[#555555]/35 rounded-full " />
-          <CarouselNext className="right-2 z-20 bg-[#555555]/35 rounded-full" />
+          <CarouselPrevious className="hidden md:block left-2 z-20 bg-[#555555]/35 rounded-full hover:bg-[#555555]/50 transition-colors" />
+          <CarouselNext className="hidden md:block right-2 z-20 bg-[#555555]/35 rounded-full hover:bg-[#555555]/50 transition-colors" />
         </Carousel>
       </div>
     </section>

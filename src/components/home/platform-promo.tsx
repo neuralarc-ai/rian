@@ -36,7 +36,7 @@ export default function PlatformPromo() {
         {/* Right Section */}
         <div className="relative w-1/2 object-cover h-full -z-10 overflow-hidden flex justify-center items-center">
           <Image
-            src="/images/home/platform-web.png"
+            src="/images/home/platform-web.webp"
             alt="Platform Dashboard"
             width={1000}
             height={1000}

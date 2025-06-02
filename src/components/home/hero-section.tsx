@@ -45,7 +45,7 @@ export default function HeroSection() {
           variants={fadeUp}
         >
           <Image
-            src="/images/home/hero-image-web.png"
+            src="/images/home/hero-image-web.webp"
             alt="Rian Dashboard"
             width={1400}
             height={1180}

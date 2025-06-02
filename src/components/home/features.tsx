@@ -95,7 +95,7 @@ export default function Features() {
           />
           {/* Overlay */}
           <Image
-            src="/images/home/feature-overlay-1.png"
+            src="/images/home/feature-overlay-1.webp"
             alt="Overlay 1"
             fill
             className="absolute inset-0 object-cover rounded-3xl pointer-events-none z-20"
@@ -122,7 +122,7 @@ export default function Features() {
           />
           {/* Feature Overlay */}
           <Image
-            src="/images/home/feature-overlay-2.png"
+            src="/images/home/feature-overlay-2.webp"
             alt="Feature Overlay"
             fill
             className="absolute inset-0 object-cover rounded-3xl pointer-events-none z-10"
@@ -130,7 +130,7 @@ export default function Features() {
           />
           {/* Background Image */}
           <Image
-            src="/images/home/languages-card-web.png"
+            src="/images/home/languages-card-web.webp"
             alt="Languages Background"
             width={1200}
             height={1200}
@@ -138,7 +138,7 @@ export default function Features() {
             priority={false}
           />
           <Image
-            src="/images/home/languages-card-mobile.png"
+            src="/images/home/languages-card-mobile.webp"
             alt="Languages Background"
             width={1200}
             height={1200}
@@ -181,7 +181,7 @@ export default function Features() {
             </div>
             {/* Overlay */}
             <Image
-              src="/images/home/feature-overlay-3.png"
+              src="/images/home/feature-overlay-3.webp"
               alt="Overlay 3"
               fill
               className="absolute inset-0 object-cover rounded-3xl pointer-events-none z-20"
@@ -208,7 +208,7 @@ export default function Features() {
             />
             {/* Overlay */}
             <Image
-              src="/images/home/feature-overlay-4.png"
+              src="/images/home/feature-overlay-4.webp"
               alt="Overlay 4"
               fill
               className="absolute inset-0 object-cover rounded-3xl pointer-events-none z-20"
