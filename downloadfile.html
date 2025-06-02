@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        .loader {
+            position: fixed;
+            margin: auto;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite;
+            /* Safari */
+            animation: spin 2s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body></body>
+<script>
+	var transFileApi = 'v1/QTEmailTranslate/DownloadTranslatedFile'
+	var loader = document.createElement('div');
+	loader.classList.add('loader');
+
+	function getApiHost() {
+		if (window.location.origin.match('(?:(?:(?:http|https|ftp|file):\/\/)|www.)rian.io') != null) {
+			return 'https://api.rian.io/';
+		} else if (window.location.origin.match('(?:(?:(?:http|https|ftp|file):\/\/)|www.)test.rian.io') != null) {
+			return 'https://testapi.rian.io/';
+		} else {
+			return 'http://localhost:5000/';
+		}
+	}
+
+	function getTranslatedFile() {
+
+		var urlParams = new URLSearchParams(window.location.search);
+		if (urlParams.has('fn') && urlParams.has('tk')) {
+			var fileName = decodeURIComponent(urlParams.get('fn'));
+			document.body.append(loader);
+
+			fetch(getApiHost() + transFileApi + window.location.search)
+				.then((response) => {
+					if (response.status === 200) {
+						return response.headers.get("content-type") === 'application/octet-stream' ? response.blob() : response.json();
+					} else {
+						throw new Error(response.status);
+					}
+				})
+				.then((response) => {
+					if (response instanceof Blob) {
+						var url = window.URL.createObjectURL(response);
+						var a = document.createElement('a');
+						a.href = url;
+						a.download = fileName;
+						document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+						a.click();
+						a.remove();
+					} else if (!!response && response.status === 50009) {
+						alert('Access to the file is restricted or file does not exist.')
+					} else if (!!response && response.status === 50161) {
+						alert('File has already been already processed and downloaded.')
+					} else {
+						throw new Error(response.status);
+					}
+				})
+				.catch(() => alert('Unable to download the file, please contact Rian support team.'))
+				.finally(() => loader.remove());
+		} else {
+			alert('Unable to download the file, please contact Rian support team.')
+		}
+	}
+
+	getTranslatedFile();
+</script>
+
+</html>

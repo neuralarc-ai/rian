@@ -32,7 +32,7 @@ export default function TermsOfUse() {
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
               <div className="flex flex-col items-center justify-center mb-10">
-                <h1 className="text-3xl lg:text-5xl font-semibold mb-4 tracking-tight text-center">Terms and Conditions</h1>
+                <h1 className="text-3xl lg:text-5xl font-semibold mb-4 tracking-tight text-center">Terms of Use</h1>
                 <span className="block text-base font-medium text-[#67F5C8] uppercase tracking-widest mb-2 text-center">Please read these terms carefully before using our services.</span>
               </div>
               <div className="space-y-8 text-base lg:text-lg font-light text-[#D1D5DB] text-pretty">

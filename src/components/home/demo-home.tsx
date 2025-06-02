@@ -76,7 +76,7 @@ const demoVideoPairs = [
 
 function VideoCard({ src, label, langTag, poster }: { src: string; label: string; langTag: string; poster: string }) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -84,7 +84,16 @@ function VideoCard({ src, label, langTag, poster }: { src: string; label: string
     const video = videoRef.current;
     if (!video) return;
 
+    // Only set loading state when video starts loading
+    const handleLoadStart = () => {
+      setIsLoading(true);
+    };
+
     const handleCanPlay = () => {
+      setIsLoading(false);
+    };
+
+    const handleLoadedData = () => {
       setIsLoading(false);
     };
 
@@ -94,11 +103,21 @@ function VideoCard({ src, label, langTag, poster }: { src: string; label: string
       setIsLoading(false);
     };
 
+    // Add all event listeners
+    video.addEventListener('loadstart', handleLoadStart);
     video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('loadeddata', handleLoadedData);
     video.addEventListener('error', handleError);
 
+    // If video is already loaded, don't show loading state
+    if (video.readyState >= 3) {
+      setIsLoading(false);
+    }
+
     return () => {
+      video.removeEventListener('loadstart', handleLoadStart);
       video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('loadeddata', handleLoadedData);
       video.removeEventListener('error', handleError);
     };
   }, []);
@@ -147,8 +166,8 @@ function VideoCard({ src, label, langTag, poster }: { src: string; label: string
           Your browser does not support the video tag.
         </video>
 
-        {/* Loading State */}
-        {isLoading && (
+        {/* Loading State - Only show when actually loading */}
+        {isLoading && !poster && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
             <div className="w-10 h-10 border-4 border-[#67F5C8] border-t-transparent rounded-full animate-spin" />
           </div>
