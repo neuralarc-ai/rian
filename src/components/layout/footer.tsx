@@ -1,7 +1,12 @@
+'use client'
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import DemoDialog from "../dialogs/DemoDialog";
 
 export default function Footer() {
+  const [demoOpen, setDemoOpen] = useState(false);
   return (
     <footer className="text-white p-8 lg:rounded-[48px] rounded-3xl max-w-[1820px] mx-auto lg:px-12 px-6 relative overflow-hidden bg-[url('/images/footer-bg-mobile.png')] lg:bg-[url('/images/footer-bg-web.png')] bg-cover bg-no-repeat bg-center">
       <div className="relative z-10 flex flex-col lg:flex-row gap-8 mb-12 w-full min-h-[212px]">
@@ -53,7 +58,13 @@ export default function Footer() {
                   <Link href="/company">Company</Link>
                 </li>
                 <li>
-                  <Link href="/contact">Contact Us</Link>
+                  <button
+                    type="button"
+                    onClick={() => setDemoOpen(true)}
+                    className="text-left hover:underline focus:outline-none"
+                  >
+                    Contact Us
+                  </button>
                 </li>
                 <li>
                   <Link href="/careers">Careers</Link>
@@ -181,6 +192,8 @@ export default function Footer() {
           </Link>
         </div>
       </div>
+
+      <DemoDialog open={demoOpen} onOpenChange={setDemoOpen} />
     </footer>
   );
 }

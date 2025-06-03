@@ -126,13 +126,13 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
                   <FormItem>
                     <FormLabel className="text-sm md:text-xl font-light">Full Name</FormLabel>
                     <FormControl>
-                      <Input className="bg-[#FFFFFF]/5 border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" placeholder="Enter your full name" {...form.register("fullName")}/>
+                      <Input className="bg-[#FFFFFF]/5  text-sm md:text-xl border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" placeholder="Enter your full name" {...form.register("fullName")}/>
                     </FormControl>
                   </FormItem>
                   <FormItem>
                     <FormLabel className="text-sm md:text-xl font-light">Company Name</FormLabel>
                     <FormControl>
-                      <Input className="bg-[#FFFFFF]/5 border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" placeholder="Enter your company name" {...form.register("company")}/>
+                      <Input className="bg-[#FFFFFF]/5  text-sm md:text-xl border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" placeholder="Enter your company name" {...form.register("company")}/>
                     </FormControl>
                   </FormItem>
                 </div>
@@ -140,7 +140,7 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
                   <FormItem>
                     <FormLabel className="text-sm md:text-xl font-light">Business Email</FormLabel>
                     <FormControl>
-                      <Input className="bg-[#FFFFFF]/5 border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" type="email" placeholder="Enter your work email" {...form.register("email")}/>
+                      <Input className="bg-[#FFFFFF]/5 text-sm md:text-xl border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" type="email" placeholder="Enter your work email" {...form.register("email")}/>
                     </FormControl>
                   </FormItem>
                   <FormItem className="col-span-2 md:col-span-1">
@@ -152,11 +152,11 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
                           onValueChange={val => form.setValue("phoneCode", val)}
                         >
                           <SelectTrigger className="w-full bg-[#FFFFFF]/5 border border-[#FFFFFF]/10 text-white rounded-md px-3 py-6 lg:py-[35px] focus:ring-0 focus:outline-0 lg:h-16 h-full">
-                            <SelectValue className="text-white ">
+                            <SelectValue className="text-white text-sm md:text-xl">
                               {(() => {
                                 const selected = countryOptions.find(c => c.code === form.watch('phoneCode'));
                                 return selected ? (
-                                  <span className="flex items-center gap-2">{selected.flag} {selected.code}</span>
+                                  <span className="flex  text-sm md:text-xl items-center gap-2">{selected.flag} {selected.code}</span>
                                 ) : null;
                               })()}
                             </SelectValue>
@@ -166,7 +166,7 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
                               <SelectItem
                                 key={c.code}
                                 value={c.code}
-                                className="text-white rounded-lg px-3 py-3 cursor-pointer transition-colors flex items-center gap-2 data-[state=checked]:bg-[#232323] data-[highlighted]:bg-[#333]/80 data-[highlighted]:text-white data-[state=checked]:text-[#F1FA38]"
+                                className="text-white text-sm md:text-xl rounded-lg px-3 py-3 cursor-pointer transition-colors flex items-center gap-2 data-[state=checked]:bg-[#232323] data-[highlighted]:bg-[#333]/80 data-[highlighted]:text-white data-[state=checked]:text-[#F1FA38]"
                               >
                                 <span className="flex items-center gap-2">{c.flag} {c.code} {c.label}</span>
                               </SelectItem>
@@ -178,7 +178,7 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
                         <Input
                           placeholder="Phone number"
                           type="tel"
-                          className="bg-[#FFFFFF]/5 col-span-4 border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18"
+                          className="bg-[#FFFFFF]/5  text-sm md:text-xl col-span-4 border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18"
                           {...form.register("phone")}
                         />
                       </FormControl>
@@ -191,7 +191,7 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
                     <Input
                       placeholder="Translate my company documents..."
                       {...form.register("goal")}
-                      className="bg-[#FFFFFF]/5 border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18"
+                      className="bg-[#FFFFFF]/5 border  text-sm md:text-xl border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18"
                     />
                   </FormControl>
                 </FormItem>
