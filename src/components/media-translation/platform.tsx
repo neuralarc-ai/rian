@@ -1,7 +1,11 @@
-import React from "react";
+'use client';
+
+import React, { useState } from "react";
 import { Button } from "../ui/button";
+import DemoDialog from "../dialogs/DemoDialog";
 
 export default function PlatformCTA() {
+  const [demoOpen, setDemoOpen] = useState(false);
   return (
     <div
       className="w-full rounded-[24px] bg-[url('/images/platform/platform-mobile.png')]  lg:bg-[url('/images/platform/platform.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-[320px] py-16 px-4 mb-12 lg:mt-24"
@@ -13,10 +17,13 @@ export default function PlatformCTA() {
         </p>
         <Button
           className="text-lg px-8 py-6 h-16 w-full md:w-fit"
+          onClick={() => setDemoOpen(true)}
         >
           Launch Interactive Demo
         </Button>
       </div>
+
+      <DemoDialog open={demoOpen} onOpenChange={setDemoOpen} />
     </div>
   );
 }

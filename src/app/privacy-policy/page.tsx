@@ -1,7 +1,6 @@
 'use client';
 
 import React, { Suspense } from "react";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Loader() {
@@ -33,14 +32,6 @@ export default function PrivacyPolicy() {
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
               <div className="flex flex-col items-center justify-center mb-10">
-                <Image
-                  src="/icons/rian-logo.svg"
-                  alt="Rian Logo"
-                  width={64}
-                  height={64}
-                  className="mb-4 drop-shadow-lg"
-                  priority
-                />
                 <h1 className="text-3xl lg:text-4xl font-light mb-2 tracking-tight text-center">Privacy Policy</h1>
                 <span className="block text-xs font-medium text-[#67F5C8] uppercase tracking-widest mb-2 text-center">Last Updated: May 30, 2025</span>
               </div>

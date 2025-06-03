@@ -61,7 +61,7 @@ export default function Footer() {
                   <button
                     type="button"
                     onClick={() => setDemoOpen(true)}
-                    className="text-left hover:underline focus:outline-none"
+                    className="text-left cursor-pointer"
                   >
                     Contact Us
                   </button>
