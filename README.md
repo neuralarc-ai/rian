@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rian – AI-Powered Voiceovers & Translations
 
-## Getting Started
+A modern, full-stack platform for creating professional-grade voiceovers and translating content into multiple languages using AI. Built with Next.js 15 (App Router), Tailwind CSS, ShadCN UI, and more.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🛠️ Tech Stack
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
+- **UI**: [Tailwind CSS](https://tailwindcss.com/), [ShadCN UI](https://ui.shadcn.com/), [Heroicons](https://heroicons.com/), [Lucide Icons](https://lucide.dev/)
+- **Forms**: [React Hook Form](https://react-hook-form.com/), [Zod](https://zod.dev/)
+- **Email**: [Nodemailer](https://nodemailer.com/)
+- **Animation**: [Framer Motion](https://www.framer.com/motion/)
+- **Utilities**: [clsx](https://github.com/lukeed/clsx), [tailwind-merge](https://github.com/dcastil/tailwind-merge)
+
+---
+
+## 📁 Directory Structure
+```
+src/
+  app/                # App Router pages & layouts
+    api/              # API routes (e.g., send-demo-email)
+    company/          # Company info page
+    careers/          # Careers & dynamic job pages
+    platform/         # Platform overview
+    privacy-policy/   # Privacy policy page
+    responsible-ai/   # Responsible AI page
+    terms-of-use/     # Terms of use page
+    ...
+  components/         # Reusable UI & feature components
+    ui/               # ShadCN-based UI primitives (Button, Form, etc.)
+    ...
+  lib/                # Utilities (e.g., cn for class merging)
+public/               # Static assets
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚡ Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Install dependencies:**
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
+2. **Run the development server:**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   ```
+3. Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ⚙️ Configuration
+- **Next.js**: See `next.config.ts` (includes bundle analyzer support)
+- **Tailwind CSS**: See `tailwind.config.js` (dark mode enabled, class strategy)
+- **TypeScript**: Strict, modern config in `tsconfig.json`
+- **ESLint**: Linting with Next.js and TypeScript best practices
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧩 Core Components & Utilities
+- **UI Primitives**: Located in `src/components/ui/` (Button, Form, Dialog, etc.)
+- **Feature Components**: Modular, by feature in `src/components/`
+- **Utility Functions**: `src/lib/utils.ts` (e.g., `cn` for class merging)
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🗂️ API Routes
+- **POST `/api/send-demo-email`**: Handles demo/quote requests and sends emails via Nodemailer. Requires SMTP environment variables.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🔑 Environment Variables
+Create a `.env.local` file in the root with:
+```
+SMTP_HOST=your.smtp.host
+SMTP_PORT=your_smtp_port
+SMTP_SECURE=true|false
+SMTP_USER=your_smtp_user
+SMTP_PASS=your_smtp_password
+```
+
+---
+
+## 📦 Scripts
+- `dev` – Start development server
+- `build` – Build for production
+- `start` – Start production server
+- `lint` – Run ESLint
+
+---
+
+## 📚 Learn More
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs)
+- [ShadCN UI Docs](https://ui.shadcn.com/docs)
