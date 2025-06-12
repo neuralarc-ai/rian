@@ -110,7 +110,7 @@ export default function Features() {
         >
           <div className="relative z-50 lg:pb-6 ">
             <h3 className="text-3xl lg:text-[82px] font-light">60+</h3>
-            <p className="text-2xl font-light">Document translation</p>
+            <p className="text-2xl font-light">Supported Languages</p>
           </div>
           {/* Gradient Overlay */}
           <div

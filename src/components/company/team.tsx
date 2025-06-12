@@ -5,7 +5,7 @@ import Image from 'next/image';
 const teamMembers = [
   { name: 'Anand', title: 'Founder', image: '/images/company/anand.png' },
   { name: 'Aniket', title: 'Chief Executive Officer', image: '/images/company/aniket.png' },
-  { name: 'Saijesh', title: 'Chief Technology Officer', image: '/images/company/saijesh.png' },
+  { name: 'Saijash', title: 'Chief Technology Officer', image: '/images/company/saijesh.png' },
   { name: 'Roopali', title: 'International Sales', image: '/images/company/roopali.png' },
   { name: 'Pranav', title: 'Chief Operating Officer', image: '/images/company/pranav.png' },
   { name: 'Ketki', title: 'Vice President - Growth', image: '/images/company/ketki.png' },

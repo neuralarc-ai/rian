@@ -28,7 +28,7 @@ export default function MediaBenefits() {
           <div className="relative min-w-[260px] xl:min-h-[576px] rounded-2xl border-[1.5px] border-white/10 shadow-[0_18px_44px_0_rgba(0,0,0,0.20)] bg-[url('/images/platform/benefit-1-bg.png')] bg-cover bg-center bg-no-repeat flex flex-col p-8">
             <Image src="/images/platform/benefit-1.png" alt="Unified Localisation Hub" width={160} height={160} className="mb-6 w-[140px] h-[155px] object-contain" />
             <div className="text-white text-2xl lg:text-[40px] mb-4">Unified<br />Localisation Hub</div>
-            <div className="mt-auto text-white text-base md:text-2xl font-light">
+            <div className="mt-auto text-white text-base md:text-2xl font-light min-h-[160px]">
               Centralise every asset, project, and collaborator from source files to final output in a single, intuitive workspace.
             </div>
           </div>
@@ -36,7 +36,7 @@ export default function MediaBenefits() {
           <div className="relative min-w-[260px] xl:min-h-[576px] rounded-2xl border-[1.5px] border-white/10 shadow-[0_18px_44px_0_rgba(0,0,0,0.20)] bg-[url('/images/platform/benefit-2-bg.png')] bg-cover bg-center bg-no-repeat flex flex-col p-8">
             <Image src="/images/platform/benefit-2.png" alt="AI + Human Workflow by Design" width={160} height={160} className="mb-6 w-[199px] h-[155px] object-contain" />
             <div className="text-white text-2xl lg:text-[40px] mb-4">AI + Human<br />Workflow by Design</div>
-            <div className="mt-auto text-white text-base md:text-2xl font-light">
+            <div className="mt-auto text-white text-base md:text-2xl font-light min-h-[160px]">
               Machine efficiency meets human nuance. Let smart automation handle scale, while experts perfect every message.
             </div>
           </div>
@@ -44,7 +44,7 @@ export default function MediaBenefits() {
           <div className="relative min-w-[260px] xl:min-h-[576px] rounded-2xl border-[1.5px] border-white/10 shadow-[0_18px_44px_0_rgba(0,0,0,0.20)] bg-[url('/images/platform/benefit-3-bg.png')] bg-cover bg-center bg-no-repeat flex flex-col p-8">
             <Image src="/images/platform/benefit-3.png" alt="Live Collaboration, Global Teams" width={160} height={160} className="mb-6 w-[199px] h-[155px] object-contain" />
             <div className="text-white text-2xl lg:text-[40px] mb-4">Live Collaboration,<br />Global Teams</div>
-            <div className="mt-auto text-white text-base md:text-2xl font-light">
+            <div className="mt-auto text-white text-base md:text-2xl font-light min-h-[160px]">
               Real-time communication between translators, editors, and managers—no delays, no disconnects.
             </div>
           </div>

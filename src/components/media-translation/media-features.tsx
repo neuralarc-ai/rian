@@ -91,7 +91,7 @@ export default function MediaFeatures() {
                 <Image src="/icons/curation.svg" alt="Curation Intelligent Agent" width={52} height={52} className="mr-2" />
                 Curation Intelligent Agent
               </li>
-              <li className="flex items-center gap-3 text-white/90 text-xlfont-light">
+              <li className="flex items-center gap-3 text-white/90 text-xl font-light">
                 <Image src="/icons/coordination.svg" alt="Co-ordination Agent" width={52} height={52} className="mr-2" />
                 Co-ordination Agent
               </li>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Dialog, DialogContent, DialogOverlay, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Form, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -52,9 +52,137 @@ const countryOptions: { code: string; label: string; flag: string }[] = all()
     flag: getFlagEmoji(country.countryCode),
   }));
 
+// Country Selector Component
+function CountrySelector({ form, countryOptions }: { form: any; countryOptions: { code: string; label: string; flag: string }[] }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const filteredCountries = countryOptions.filter(c =>
+    c.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.code.includes(searchQuery)
+  );
+
+  // Handle search input changes
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    const cursorPosition = e.target.selectionStart;
+    setSearchQuery(e.target.value);
+    // Restore cursor position after state update
+    requestAnimationFrame(() => {
+      if (searchInputRef.current) {
+        searchInputRef.current.focus();
+        searchInputRef.current.setSelectionRange(cursorPosition, cursorPosition);
+      }
+    });
+  };
+
+  // Handle key events
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    if (e.key === 'Escape') {
+      setIsOpen(false);
+    }
+  };
+
+  // Focus management
+  useEffect(() => {
+    if (isOpen && searchInputRef.current) {
+      const input = searchInputRef.current;
+      input.focus();
+      // Set cursor at the end of the input
+      const length = input.value.length;
+      input.setSelectionRange(length, length);
+    }
+  }, [isOpen]);
+
+  return (
+    <div className="col-span-2 lg:h-18 h-full">
+      <Select
+        value={form.watch("phoneCode")}
+        onValueChange={(val) => {
+          form.setValue("phoneCode", val);
+          setIsOpen(false);
+        }}
+        open={isOpen}
+        onOpenChange={(open) => {
+          setIsOpen(open);
+          if (open && searchInputRef.current) {
+            setTimeout(() => {
+              searchInputRef.current?.focus();
+            }, 0);
+          }
+        }}
+      >
+        <SelectTrigger className="w-full bg-[#FFFFFF]/5 border border-[#FFFFFF]/10 text-white rounded-md px-3 py-6 lg:py-[35px] focus:ring-0 focus:outline-0 lg:h-16 h-full">
+          <SelectValue className="text-white text-sm md:text-xl">
+            {(() => {
+              const selected = countryOptions.find(c => c.code === form.watch("phoneCode"));
+              return selected ? (
+                <span className="flex text-sm md:text-xl items-center gap-2">
+                  {selected.flag} {selected.code}
+                </span>
+              ) : null;
+            })()}
+          </SelectValue>
+        </SelectTrigger>
+
+        <SelectContent
+          className="bg-[#18181B] text-white border border-[#FFFFFF]/10 rounded-xl shadow-lg"
+          onCloseAutoFocus={(e) => {
+            e.preventDefault();
+            if (searchInputRef.current) {
+              searchInputRef.current.focus();
+            }
+          }}
+          onPointerDownOutside={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <div className="sticky top-0 z-10 bg-[#18181B] border-b border-[#FFFFFF]/10 p-2">
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search countries..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onKeyDown={handleKeyDown}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full bg-[#FFFFFF]/5 border border-[#FFFFFF]/10 text-white rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#FFFFFF]/20"
+            />
+          </div>
+
+          <div className="max-h-[300px] overflow-y-auto mt-1">
+            {filteredCountries.map((c) => (
+              <SelectItem
+                key={c.code}
+                value={c.code}
+                onSelect={(e) => {
+                  e.preventDefault();
+                  form.setValue("phoneCode", c.code);
+                  setSearchQuery("");
+                  setIsOpen(false);
+                }}
+                className="text-white text-sm md:text-xl rounded-lg px-3 py-3 cursor-pointer transition-colors flex items-center gap-2 data-[state=checked]:bg-[#232323] data-[highlighted]:bg-[#333]/80 data-[highlighted]:text-white data-[state=checked]:text-[#F1FA38]"
+              >
+                <span className="flex items-center gap-2">
+                  {c.flag} {c.code} {c.label}
+                </span>
+              </SelectItem>
+            ))}
+          </div>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
 export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const form = useForm<DemoForm>({
     resolver: zodResolver(schema),
     mode: "onBlur",
@@ -74,6 +202,11 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
       form.setValue("phoneCode", countryOptions[0].code);
     }
   }, [form]);
+
+  const filteredCountries = countryOptions.filter((country) =>
+    country.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    country.code.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // Submit handler to send email via API
   const onSubmit = async (data: DemoForm) => {
@@ -102,6 +235,19 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
     }
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+  };
+
+  const handleSearchClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogOverlay className="fixed inset-0 bg-white/5 z-50 backdrop-blur-sm" />
@@ -126,13 +272,13 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
                   <FormItem>
                     <FormLabel className="text-sm md:text-xl font-light">Full Name</FormLabel>
                     <FormControl>
-                      <Input className="bg-[#FFFFFF]/5  text-sm md:text-xl border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" placeholder="Enter your full name" {...form.register("fullName")}/>
+                      <Input className="bg-[#FFFFFF]/5  text-sm md:text-xl border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" placeholder="Enter your full name" {...form.register("fullName")} />
                     </FormControl>
                   </FormItem>
                   <FormItem>
                     <FormLabel className="text-sm md:text-xl font-light">Company Name</FormLabel>
                     <FormControl>
-                      <Input className="bg-[#FFFFFF]/5  text-sm md:text-xl border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" placeholder="Enter your company name" {...form.register("company")}/>
+                      <Input className="bg-[#FFFFFF]/5  text-sm md:text-xl border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" placeholder="Enter your company name" {...form.register("company")} />
                     </FormControl>
                   </FormItem>
                 </div>
@@ -140,45 +286,18 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
                   <FormItem>
                     <FormLabel className="text-sm md:text-xl font-light">Business Email</FormLabel>
                     <FormControl>
-                      <Input className="bg-[#FFFFFF]/5 text-sm md:text-xl border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" type="email" placeholder="Enter your work email" {...form.register("email")}/>
+                      <Input className="bg-[#FFFFFF]/5 text-sm md:text-xl border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18" type="email" placeholder="Enter your work email" {...form.register("email")} />
                     </FormControl>
                   </FormItem>
                   <FormItem className="col-span-2 md:col-span-1">
                     <FormLabel className="text-sm md:text-xl font-light">Phone Number</FormLabel>
                     <div className="grid grid-cols-6 gap-2">
-                      <div className="col-span-2 lg:h-18 h-full">
-                        <Select
-                          value={form.watch("phoneCode")}
-                          onValueChange={val => form.setValue("phoneCode", val)}
-                        >
-                          <SelectTrigger className="w-full bg-[#FFFFFF]/5 border border-[#FFFFFF]/10 text-white rounded-md px-3 py-6 lg:py-[35px] focus:ring-0 focus:outline-0 lg:h-16 h-full">
-                            <SelectValue className="text-white text-sm md:text-xl">
-                              {(() => {
-                                const selected = countryOptions.find(c => c.code === form.watch('phoneCode'));
-                                return selected ? (
-                                  <span className="flex  text-sm md:text-xl items-center gap-2">{selected.flag} {selected.code}</span>
-                                ) : null;
-                              })()}
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent className="bg-[#18181B] text-white border border-[#FFFFFF]/10 rounded-xl shadow-lg p-1">
-                            {countryOptions.map((c) => (
-                              <SelectItem
-                                key={c.code}
-                                value={c.code}
-                                className="text-white text-sm md:text-xl rounded-lg px-3 py-3 cursor-pointer transition-colors flex items-center gap-2 data-[state=checked]:bg-[#232323] data-[highlighted]:bg-[#333]/80 data-[highlighted]:text-white data-[state=checked]:text-[#F1FA38]"
-                              >
-                                <span className="flex items-center gap-2">{c.flag} {c.code} {c.label}</span>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <CountrySelector form={form} countryOptions={countryOptions} />
                       <FormControl>
                         <Input
                           placeholder="Phone number"
                           type="tel"
-                          className="bg-[#FFFFFF]/5  text-sm md:text-xl col-span-4 border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18"
+                          className="bg-[#FFFFFF]/5 text-sm md:text-xl col-span-4 border border-[#FFFFFF]/10 py-6 px-3 focus:ring-0 focus:outline-0 lg:h-18"
                           {...form.register("phone")}
                         />
                       </FormControl>
