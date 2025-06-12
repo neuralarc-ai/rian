@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Dialog, DialogContent, DialogOverlay, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Form, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -38,22 +38,35 @@ function getFlagEmoji(countryCode: string) {
 }
 
 // Get country codes and names (unique dial codes only)
-const seenDialCodes = new Set<string>();
-const countryOptions: { code: string; label: string; flag: string }[] = all()
-  .filter((country) => {
-    const dial = `+${country.countryCallingCode}`;
-    if (seenDialCodes.has(dial)) return false;
-    seenDialCodes.add(dial);
-    return true;
-  })
-  .map((country) => ({
-    code: `+${country.countryCallingCode}`,
-    label: country.countryNameEn,
-    flag: getFlagEmoji(country.countryCode),
-  }));
+const countryOptionsMap = new Map<string, { code: string; label: string; flag: string }>();
+
+// Prioritize United States for +1
+const usCountry = all().find(c => c.countryCode === 'US');
+if (usCountry) {
+  const usDialCode = `+${usCountry.countryCallingCode}`;
+  countryOptionsMap.set(usDialCode, {
+    code: usDialCode,
+    label: usCountry.countryNameEn,
+    flag: getFlagEmoji(usCountry.countryCode),
+  });
+}
+
+// Add all other countries, ensuring uniqueness by dial code, but not overriding already set values (like US)
+all().forEach((country) => {
+  const dial = `+${country.countryCallingCode}`;
+  if (!countryOptionsMap.has(dial)) {
+    countryOptionsMap.set(dial, {
+      code: dial,
+      label: country.countryNameEn,
+      flag: getFlagEmoji(country.countryCode),
+    });
+  }
+});
+
+const countryOptions: { code: string; label: string; flag: string }[] = Array.from(countryOptionsMap.values());
 
 // Country Selector Component
-function CountrySelector({ form, countryOptions }: { form: any; countryOptions: { code: string; label: string; flag: string }[] }) {
+function CountrySelector({ form, countryOptions }: { form: UseFormReturn<DemoForm>; countryOptions: { code: string; label: string; flag: string }[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -135,9 +148,6 @@ function CountrySelector({ form, countryOptions }: { form: any; countryOptions: 
               searchInputRef.current.focus();
             }
           }}
-          onPointerDownOutside={(e) => {
-            e.preventDefault();
-          }}
         >
           <div className="sticky top-0 z-10 bg-[#18181B] border-b border-[#FFFFFF]/10 p-2">
             <input
@@ -180,9 +190,6 @@ function CountrySelector({ form, countryOptions }: { form: any; countryOptions: 
 export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const form = useForm<DemoForm>({
     resolver: zodResolver(schema),
     mode: "onBlur",
@@ -202,11 +209,6 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
       form.setValue("phoneCode", countryOptions[0].code);
     }
   }, [form]);
-
-  const filteredCountries = countryOptions.filter((country) =>
-    country.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    country.code.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   // Submit handler to send email via API
   const onSubmit = async (data: DemoForm) => {
@@ -233,19 +235,6 @@ export default function DemoDialog({ open, onOpenChange }: { open: boolean; onOp
       setLoading(false);
       alert('Failed to send demo request. Please try again.');
     }
-  };
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
-    setSearchQuery(e.target.value);
-  };
-
-  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    e.stopPropagation();
-  };
-
-  const handleSearchClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    e.stopPropagation();
   };
 
   return (
